@@ -16,16 +16,22 @@ runs:
       run: |
         # install kas to have all kas dependencies:
         pip install .[test]
+    - name: Cache newt
+      id: cache-newt
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
+      with:
+        path: |
+          newt
+        key: cache-newt-${{ env.NEWT_REVISION }}
     - name: Install python-newt
       shell: bash
       run: |
         sudo apt-get update
-        sudo apt-get install libpopt-dev libslang2-dev
-        wget -q https://releases.pagure.org/newt/newt-$NEWT_VERSION.tar.gz
-        echo "$NEWT_SHA256 newt-$NEWT_VERSION.tar.gz" | sha256sum -c
-        tar -C /tmp -xzf newt-$NEWT_VERSION.tar.gz
-        cd /tmp/newt-$NEWT_VERSION
-        autoconf
+        sudo apt-get install libpopt-dev libslang2-dev gettext
+        [ -d newt ] || git clone https://pagure.io/newt.git
+        cd newt
+        git checkout $NEWT_REVISION
+        autoreconf -fi
         ./configure --with-python=python${{ matrix.python-version }}
         make -j $(nproc)
         sudo make install
