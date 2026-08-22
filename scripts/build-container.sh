@@ -2,7 +2,7 @@
 #
 # kas - setup tool for bitbake based projects
 #
-# Copyright (c) Siemens AG, 2024
+# Copyright (c) Siemens AG, 2026
 #
 # Authors:
 #  Jan Kiszka <jan.kiszka@siemens.com>
@@ -26,7 +26,7 @@
 # SOFTWARE.
 
 # This needs to be aligned with .github/actions/docker-init/action.yml
-BUILDKIT="moby/buildkit:v0.16.0"
+BUILDKIT="moby/buildkit:v0.32.0"
 
 usage()
 {
