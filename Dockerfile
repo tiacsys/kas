@@ -39,9 +39,9 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=${CACHE_SHARING} \
     rm -f /etc/apt/apt.conf.d/docker-clean && \
     echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-packages.conf && \
     if echo "${DEBIAN_TAG}" | grep -q "[0-9]"; then \
-        cp /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources~; \
-        sed -i -e 's|^URIs:|#|' -e 's|^# http://snapshot\.|URIs: http://snapshot.|' \
-            /etc/apt/sources.list.d/debian.sources; \
+        mv -v /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/debian.sources~; \
+        sed -e 's|^URIs:|#|' -e 's|^# http://snapshot\.|URIs: http://snapshot.|' \
+            /etc/apt/sources.list.d/debian.sources~ > /etc/apt/sources.list.d/debian-snapshot.sources; \
         echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/use-snapshot.conf; \
         echo 'Acquire::Retries "10";' >> /etc/apt/apt.conf.d/use-snapshot.conf; \
         echo 'Acquire::Retries::Delay::Maximum "600";' >> /etc/apt/apt.conf.d/use-snapshot.conf; \
@@ -116,7 +116,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=${CACHE_SHARING} \
             uidmap acl && \
     rm -f /etc/apt/apt.conf.d/use-snapshot.conf /etc/apt/apt.conf.d/keep-packages.conf && \
     if [ -f "/etc/apt/sources.list.d/debian.sources~" ]; then \
-        mv -f /etc/apt/sources.list.d/debian.sources~ /etc/apt/sources.list.d/debian.sources; \
+        rm /etc/apt/sources.list.d/debian-snapshot.sources; \
+        mv -v /etc/apt/sources.list.d/debian.sources~ /etc/apt/sources.list.d/debian.sources; \
     fi && \
     rm -rf /var/log/* /tmp/* /var/tmp/* /var/cache/ldconfig/aux-cache && \
     sbuild-adduser builder && \
@@ -150,7 +151,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=${CACHE_SHARING} \
     fi && \
     rm -f /etc/apt/apt.conf.d/use-snapshot.conf /etc/apt/apt.conf.d/keep-packages.conf && \
     if [ -f "/etc/apt/sources.list.d/debian.sources~" ]; then \
-        mv -f /etc/apt/sources.list.d/debian.sources~ /etc/apt/sources.list.d/debian.sources; \
+        rm /etc/apt/sources.list.d/debian-snapshot.sources; \
+        mv -v /etc/apt/sources.list.d/debian.sources~ /etc/apt/sources.list.d/debian.sources; \
     fi && \
     rm -rf /var/log/* /tmp/* /var/tmp/* /var/cache/ldconfig/aux-cache
 
