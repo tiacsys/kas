@@ -34,11 +34,7 @@ runs:
         autoreconf -fi
         ./configure --with-python=python${{ matrix.python-version }}
         make -j $(nproc)
-        sudo make install
-        ln -s /usr/local/lib/python${{ matrix.python-version }}/site-packages/_snack.so \
-              $(python3 -c 'import site; print(site.getsitepackages()[0])')/
-        ln -s /usr/local/lib/python${{ matrix.python-version }}/site-packages/snack.py \
-              $(python3 -c 'import site; print(site.getsitepackages()[0])')/
+        sudo --preserve-env=PATH make install
     - name: Run offline tests
       shell: bash
       env:
