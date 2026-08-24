@@ -70,8 +70,8 @@ usage()
 	            "To force the use\n"
 	printf "%b" "\t\t\tof run0 over sudo, set KAS_SUDO_CMD=run0.\n"
 	printf "%b" "--isar-rootless\t\tRun an Isar build in rootless mode.\n"
-	printf "%b" "--kvm\t\tPass /dev/kvm into the container (for runqemu/testimage KVM\n" \
-			"acceleration) and grant the build user access to it."
+	printf "%b" "--kvm\t\t\tPass /dev/kvm into the container (for runqemu/testimage KVM\n" \
+			"\t\t\tacceleration) and grant the build user access to it.\n"
 	printf "%b" "--runtime-args\t\tAdditional arguments to pass to the " \
 			"container runtime.\n"
 	printf "%b" "\t\t\tfor running the build.\n"
