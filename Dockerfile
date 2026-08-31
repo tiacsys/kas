@@ -136,18 +136,23 @@ FROM kas-base AS kas
 ARG SOURCE_DATE_EPOCH
 ARG CACHE_SHARING=locked
 
-# The installed package list is actually taken 1:1 from the Yocto documentation
-# (exception: pylint3 -> pylint). So there might be packages that were already
-# installed by kas-base which will not change the overall image size.
+# The installed package list is actually taken 1:1 from the Yocto 6
+# documentation (exceptions: lz4 for Yocto 5, libegl1, libsdl1.2-dev,
+# mesa-common-dev, pylint, xterm for Yocto 4). So there might be packages that
+# were already  installed by kas-base which will not change the overall image
+# size.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=${CACHE_SHARING} \
     --mount=type=cache,target=/var/lib/apt,sharing=${CACHE_SHARING} \
     apt-get update && \
     apt-get install --no-install-recommends -y \
-        gawk wget git diffstat unzip texinfo \
-        gcc build-essential chrpath socat cpio python3 python3-pip python3-pexpect \
-        xz-utils debianutils iputils-ping python3-git python3-jinja2 libegl1 libsdl1.2-dev \
-        pylint xterm python3-subunit mesa-common-dev zstd lz4 && \
+        build-essential chrpath cpio debianutils diffstat file gawk gcc git \
+        iputils-ping libacl1 libcrypt-dev locales python3 python3-git \
+        python3-jinja2 python3-pexpect python3-pip python3-subunit socat \
+        texinfo unzip wget xz-utils zstd \
+        lz4 \
+        libegl1 libsdl1.2-dev mesa-common-dev pylint xterm && \
     if [ "$TARGETPLATFORM" = "linux/amd64" ]; then \
+        # needed for Yocto 3
         apt-get install --no-install-recommends -y gcc-multilib g++-multilib; \
     fi && \
     rm -f /etc/apt/apt.conf.d/use-snapshot.conf /etc/apt/apt.conf.d/keep-packages.conf && \
