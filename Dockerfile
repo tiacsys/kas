@@ -145,8 +145,8 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=${CACHE_SHARING} \
     --mount=type=cache,target=/var/lib/apt,sharing=${CACHE_SHARING} \
     apt-get update && \
     apt-get install --no-install-recommends -y \
-        build-essential chrpath cpio debianutils diffstat file gawk gcc git \
-        iputils-ping libacl1 libcrypt-dev locales python3 python3-git \
+        build-essential ccache chrpath cpio debianutils diffstat file gawk \
+        gcc git iputils-ping libacl1 libcrypt-dev locales python3 python3-git \
         python3-jinja2 python3-pexpect python3-pip python3-subunit socat \
         texinfo unzip wget xz-utils zstd \
         lz4 \
