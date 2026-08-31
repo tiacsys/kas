@@ -97,23 +97,25 @@ FROM kas-base AS kas-isar
 ARG SOURCE_DATE_EPOCH
 ARG CACHE_SHARING=locked
 
-# The install package list are actually taking 1:1 from their documentation,
-# so there some packages that can already installed by other downstream layers.
-# This will not change any image sizes on all the layers in use.
+# The installed package list is actually taken 1:1 from the Isar documentation
+# (exceptions: binfmt-support, handled by container-entrypoint, umoci + skopeo,
+# optional for container build, python3-botocore, optional for isar-sstate,
+# debootstrap dosfstools mtools parted, needed for older Isar). So there might
+# be packages that were already installed by kas-base which will not change the
+# overall image size.
 ENV LC_ALL=en_US.UTF-8
 RUN --mount=type=cache,target=/var/cache/apt,sharing=${CACHE_SHARING} \
     --mount=type=cache,target=/var/lib/apt,sharing=${CACHE_SHARING} \
     apt-get update && \
     apt-get install -y -f --no-install-recommends \
-            bzip2 mmdebstrap arch-test apt-utils dosfstools \
-            dpkg-dev gettext-base git mtools parted python3 \
-            quilt qemu-user-static reprepro sudo unzip git-buildpackage \
-            pristine-tar '(^sbuild-schroot$|^sbuild$)' schroot zstd \
+            acl bubblewrap bzip2 mmdebstrap arch-test apt-utils dpkg-dev \
+            gettext-base git python3 quilt qemu-user-static reprepro sudo \
+            uidmap unzip git-buildpackage pristine-tar \
+            '(^sbuild-schroot$|^sbuild$)' schroot zstd \
             umoci skopeo \
             python3-botocore \
-            bubblewrap \
-            debootstrap \
-            uidmap acl && \
+            debootstrap dosfstools mtools parted \
+            && \
     rm -f /etc/apt/apt.conf.d/use-snapshot.conf /etc/apt/apt.conf.d/keep-packages.conf && \
     if [ -f "/etc/apt/sources.list.d/debian.sources~" ]; then \
         rm /etc/apt/sources.list.d/debian-snapshot.sources; \
@@ -134,10 +136,9 @@ FROM kas-base AS kas
 ARG SOURCE_DATE_EPOCH
 ARG CACHE_SHARING=locked
 
-# The install package list are actually taking 1:1 from their documentation
-# (exception: pylint3 -> pylint),  so there some packages that can already
-# installed by other downstream layers. This will not change any image sizes
-# on all the layers in use.
+# The installed package list is actually taken 1:1 from the Yocto documentation
+# (exception: pylint3 -> pylint). So there might be packages that were already
+# installed by kas-base which will not change the overall image size.
 RUN --mount=type=cache,target=/var/cache/apt,sharing=${CACHE_SHARING} \
     --mount=type=cache,target=/var/lib/apt,sharing=${CACHE_SHARING} \
     apt-get update && \
