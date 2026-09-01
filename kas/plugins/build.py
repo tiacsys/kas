@@ -81,7 +81,7 @@ class Build:
                             nargs='*',
                             help='Extra arguments to pass to bitbake '
                                  '(typically requires separation via \'--\')')
-        parser.add_argument('--target',
+        parser.add_argument('-t', '--target', dest='target',
                             action='append',
                             help='Select target to build')
         parser.add_argument('-c', '--cmd', '--task', dest='task',
